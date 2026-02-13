@@ -4,71 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Language Translator</title>
-    <style>
-        body {
-            background-color: #4CAF50; /* Green background */
-            font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-        select, button {
-            margin: 10px;
-            padding: 10px;
-            font-size: 16px;
-        }
-        #translationResult {
-            margin-top: 20px;
-            font-size: 22px;
-        }
-    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1>Language Translator</h1>
-    <select id="languageSelect">
-        <!-- Language options from an array of 36 languages -->
-        <option value="en">English</option>
-        <option value="es">Spanish</option>
-        <option value="fr">French</option>
-        <option value="de">German</option>
-        <option value="zh">Chinese</option>
-        <option value="ja">Japanese</option>
-        <option value="ru">Russian</option>
-        <!-- Add additional languages as needed -->
-    </select>
-    <br>
-    <textarea id="textInput" rows="4" cols="50" placeholder="Enter text here..."></textarea>
-    <br>
-    <button onclick="translateText()">Translate</button>
-    <button onclick="copyText()">Copy</button>
-    <button onclick="textToSpeech()">Text To Speech</button>
-    <button onclick="exchange()">Exchange</button>
-    <div id="translationResult"></div>
+    <select id="sourceLang"></select>
+    <textarea id="sourceText" placeholder="Enter text to translate..."></textarea>
+    <button id="translateBtn">Translate</button>
+    <h2>Translation</h2>
+    <div id="translatedText"></div>
+    <button id="copyBtn">Copy Translation</button>
+    <button id="ttsBtn">Text-to-Speech</button>
 
     <script>
-        async function translateText() {
-            const text = document.getElementById('textInput').value;
-            const language = document.getElementById('languageSelect').value;
-            const response = await fetch(`https://api.example.com/translate?text=${encodeURIComponent(text)}&lang=${language}`);
-            const data = await response.json();
-            document.getElementById('translationResult').innerText = data.translatedText;
-        }
+        const languages = {"en":"English", "es":"Spanish", "fr":"French", "de":"German", "zh":"Chinese", "ja":"Japanese", "it":"Italian", "pt":"Portuguese", "ru":"Russian", "hindi":"Hindi", "arabic":"Arabic", "korean":"Korean", "swedish":"Swedish", "norwegian":"Norwegian", "dutch":"Dutch", "finnish":"Finnish", "turkish":"Turkish", "hebrew":"Hebrew", "thai":"Thai", "vietnamese":"Vietnamese", "indonesian":"Indonesian", "malay":"Malay", "filipino":"Filipino", "swahili":"Swahili", "pashto":"Pashto", "persian":"Persian", "bengali":"Bengali", "czech":"Czech", "hungarian":"Hungarian", "romanian":"Romanian", "slovak":"Slovak", "bulgarian":"Bulgarian", "ukrainian":"Ukrainian"};
 
-        function copyText() {
-            const result = document.getElementById('translationResult').innerText;
-            navigator.clipboard.writeText(result);
-        }
+        $(document).ready(function() {
+            for (const [code, name] of Object.entries(languages)) {
+                $('#sourceLang').append(`<option value="${code}">${name}</option>`);
+            }
+        });
 
-        function textToSpeech() {
-            const text = document.getElementById('translationResult').innerText;
+        $('#translateBtn').click(function() {
+            const lang = $('#sourceLang').val();
+            const text = $('#sourceText').val();
+            $.get(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${lang}`, function(data) {
+                $('#translatedText').text(data.responseData.translatedText);
+            });
+        });
+
+        $('#copyBtn').click(function() {
+            const translatedText = $('#translatedText').text();
+            navigator.clipboard.writeText(translatedText);
+            alert('Translation copied to clipboard!');
+        });
+
+        $('#ttsBtn').click(function() {
+            const text = $('#translatedText').text();
             const utterance = new SpeechSynthesisUtterance(text);
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function exchange() {
-            const langSelect = document.getElementById('languageSelect');
-            langSelect.value = langSelect.value === 'en' ? 'es' : 'en'; // Example of exchange functionality
-        }
+            speechSynthesis.speak(utterance);
+        });
     </script>
 </body>
 </html>
