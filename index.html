@@ -4,27 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Language Translator</title>
+    <style>
+        body {
+            background-color: #4CAF50; /* Green background */
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        select, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #translationResult {
+            margin-top: 20px;
+            font-size: 22px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Language Translator</h1>
-    <form id="translator-form">
-        <label for="text">Enter text to translate:</label><br>
-        <textarea id="text" rows="4" cols="50"></textarea><br>
-        <label for="language">Choose a language:</label><br>
-        <select id="language">
-            <option value="spanish">Spanish</option>
-            <option value="french">French</option>
-            <option value="german">German</option>
-        </select><br>
-        <button type="submit">Translate</button>
-    </form>
-    <div id="translation-result"></div>
+    <h1>Language Translator</h1>
+    <select id="languageSelect">
+        <!-- Language options from an array of 36 languages -->
+        <option value="en">English</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="zh">Chinese</option>
+        <option value="ja">Japanese</option>
+        <option value="ru">Russian</option>
+        <!-- Add additional languages as needed -->
+    </select>
+    <br>
+    <textarea id="textInput" rows="4" cols="50" placeholder="Enter text here..."></textarea>
+    <br>
+    <button onclick="translateText()">Translate</button>
+    <button onclick="copyText()">Copy</button>
+    <button onclick="textToSpeech()">Text To Speech</button>
+    <button onclick="exchange()">Exchange</button>
+    <div id="translationResult"></div>
+
     <script>
-        document.getElementById('translator-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            // Add translation logic here
-            document.getElementById('translation-result').innerText = 'Translation result will appear here.';
-        });
+        async function translateText() {
+            const text = document.getElementById('textInput').value;
+            const language = document.getElementById('languageSelect').value;
+            const response = await fetch(`https://api.example.com/translate?text=${encodeURIComponent(text)}&lang=${language}`);
+            const data = await response.json();
+            document.getElementById('translationResult').innerText = data.translatedText;
+        }
+
+        function copyText() {
+            const result = document.getElementById('translationResult').innerText;
+            navigator.clipboard.writeText(result);
+        }
+
+        function textToSpeech() {
+            const text = document.getElementById('translationResult').innerText;
+            const utterance = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function exchange() {
+            const langSelect = document.getElementById('languageSelect');
+            langSelect.value = langSelect.value === 'en' ? 'es' : 'en'; // Example of exchange functionality
+        }
     </script>
 </body>
 </html>
