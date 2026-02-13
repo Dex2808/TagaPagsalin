@@ -4,30 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Language Translator</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        async function translateText() {
-            const textToTranslate = $('#textToTranslate').val();
-            const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=YOUR_API_KEY`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    q: textToTranslate,
-                    target: 'tl'
-                })
-            });
-            const data = await response.json();
-            $('#result').text(data.data.translations[0].translatedText);
-        }
-    </script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #translator { margin: 20px; }
+        select, textarea, button { width: 100%; margin: 10px 0; }
+    </style>
 </head>
 <body>
-    <h1>Language Translator</h1>
-    <textarea id="textToTranslate" placeholder="Enter text to translate..." rows="4" cols="50"></textarea><br>
-    <button onclick="translateText()">Translate</button>
-    <h2>Translated Text:</h2>
-    <div id="result" style="border: 1px solid; padding: 10px;"></div>
+    <div id="translator">
+        <h1>Language Translator</h1>
+        <select id="sourceLang">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <!-- Add other languages here -->
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="ja">Japanese</option>
+            <option value="zh">Chinese</option>
+            <option value="ru">Russian</option>
+            <option value="pt">Portuguese</option>
+            <option value="ar">Arabic</option>
+             <!-- Add remaining languages to reach 36 languages -->
+            <option value="tr">Turkish</option>
+            <option value="ko">Korean</option>
+            <option value="nl">Dutch</option>
+            <option value="sv">Swedish</option>
+            <option value="no">Norwegian</option>
+            <option value="fi">Finnish</option>
+            <option value="da">Danish</option>
+            <option value="pl">Polish</option>
+            <option value="th">Thai</option>
+            <option value="vi">Vietnamese</option>
+            <option value="hi">Hindi</option>
+            <option value="bg">Bulgarian</option>
+            <option value="cs">Czech</option>
+            <option value="ro">Romanian</option>
+            <option value="hr">Croatian</option>
+            <option value="sk">Slovak</option>
+            <option value="sl">Slovenian</option>
+            <option value="lv">Latvian</option>
+            <option value="lt">Lithuanian</option>
+            <option value="et">Estonian</option>
+            <option value="mt">Maltese</option>
+            <option value="uk">Ukrainian</option>
+        </select>
+        <textarea id="text" rows="4" placeholder="Enter text to translate"></textarea>
+        <button id="translateBtn">Translate</button>
+        <h3>Translation:</h3>
+        <div id="result"></div>
+        <button id="copyBtn">Copy Translation</button>
+        <button id="speechBtn">Speak Translation</button>
+    </div>
+
+    <script>
+        document.getElementById('translateBtn').onclick = async function() {
+            const sourceLang = document.getElementById('sourceLang').value;
+            const text = document.getElementById('text').value;
+            const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|en`);
+            const data = await response.json();
+            document.getElementById('result').innerText = data.responseData.translatedText;
+        };
+
+        document.getElementById('copyBtn').onclick = function() {
+            const result = document.getElementById('result').innerText;
+            navigator.clipboard.writeText(result);
+        };
+
+        document.getElementById('speechBtn').onclick = function() {
+            const result = document.getElementById('result').innerText;
+            const speech = new SpeechSynthesisUtterance(result);
+            window.speechSynthesis.speak(speech);
+        };
+    </script>
 </body>
 </html>
