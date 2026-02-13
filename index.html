@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Translator</title>
+</head>
+<body>
+    <h1>Welcome to the Language Translator</h1>
+    <form id="translator-form">
+        <label for="text">Enter text to translate:</label><br>
+        <textarea id="text" rows="4" cols="50"></textarea><br>
+        <label for="language">Choose a language:</label><br>
+        <select id="language">
+            <option value="spanish">Spanish</option>
+            <option value="french">French</option>
+            <option value="german">German</option>
+        </select><br>
+        <button type="submit">Translate</button>
+    </form>
+    <div id="translation-result"></div>
+    <script>
+        document.getElementById('translator-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Add translation logic here
+            document.getElementById('translation-result').innerText = 'Translation result will appear here.';
+        });
+    </script>
+</body>
+</html>
